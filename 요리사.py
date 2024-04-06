@@ -1,39 +1,53 @@
-# def flavor_diff(arr1, arr2):
+# 팀 1, 팀 2
+team1 = []
+# 팀 뽑기: (N/2)명
+def dfs(st, n):
+    # 차이 최소값
+    global mn_dif
 
-
-def make_team(cnt):
-    global food_1, food_2
-
-    # 기저조건: 재료가 N//2가 되면 되면 종료
-    if len(food_1) == N//2:
-        # 음식 2 만들기
-        food_2 = list(set(all_mat) - set(food_1))
-        # 두 음식간 시너지 차이 계산하기
-        flavor_diff(food_1, food_2)
+    # 기저조건 : cnt가 N/2 이상 되면 종료
+    if len(team1) == N//2:
+        # 정답처리 : team2에 team1을 제외한 사람들 넣기, 각 팀 별 가치 계산
+        # team2 생성
+        team2 = list(set(range(1, N+1)) - set(team1))
+        # 팀 별 가치 계산
+        val1 = team_value(team1)
+        val2 = team_value(team2)
+        dif = abs(val1 - val2)
+        # 최소값 갱신
+        mn_dif = min(dif, mn_dif)
         return
 
-    # 재귀조건: 재료를 넣느냐, 마느냐
-    for i in range(cnt, N):
-        # 중복 제거
-        if len(food_1) > 0 and food_1[-1] == i:
-            continue
-        food_1.append(i)
-        make_team(i+1)
-        food_1.pop()
+    # 재귀조건 : 팀에 멤버를 추가하는 경우, 하지않는 경우
+    for i in range(st, n+1):
+        # 같은 멤버 x, 중복되는 경우 제거
+        if i not in team1:
+            team1.append(i)
+            dfs(i+1, n)
+            team1.pop()
+
+
+# 팀 가치 계산 함수
+def team_value(team):
+    # 합
+    val = 0
+
+    # 2개씩 뽑아서 더하기
+    for i in range(len(team)):
+        for j in range(i+1, len(team)):
+            p1, p2 = team[i]-1, team[j]-1
+
+            val += S[p1][p2] + S[p2][p1]
+
+    return val
 
 
 T = int(input())
 
 for tc in range(1, T+1):
-    # 재료 갯수 N
     N = int(input())
-    # 모든 재료 배열
-    all_mat = list(range(N))
-    # 시너지들 synerges
-    synerges = [list(map(int, input().split())) for _ in range(N)]
+    S = [list(map(int, input().split())) for _ in range(N)]
 
-    # 음식 1, 음식 2
-    food_1 = []
-    food_2 = []
-    # 팀 만들기 시작 (DFS)
-    make_team(0)
+    mn_dif = 2000
+    dfs(1, N)
+    print(f'#{tc} {mn_dif}')
