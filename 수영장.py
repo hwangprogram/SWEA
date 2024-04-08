@@ -11,21 +11,20 @@ def dfs(cnt, cost):
     # 기저조건: 12월까지 진행하고 종료
     if cnt == 12:
         # 정답처리: 최소값 구하기
-        min_cost  = min(min_cost, cost)
+        min_cost = min(min_cost, cost)
         return
 
     # 재귀조건: 각 이용권 사용하는 경우의 수
-    if plan[cnt] > 0:
-        # 1일권
-        dfs(cnt + 1, cost + d * plan[cnt])
-        # 1달권
-        dfs(cnt + 1, cost + m)
-        # 3달권: 10월까지만 사용가능
-        if cnt < 10:
-            dfs(cnt + 3, cost + m_3)
-        # 1년권: 1월에만 사용가능
-        if cnt == 0:
-            dfs(cnt + 12, cost + y)
+    # 1일권
+    dfs(cnt + 1, cost + d * plan[cnt])
+    # 1달권
+    dfs(cnt + 1, cost + m)
+    # 3달권: 10월까지만 사용가능
+    if cnt < 10:
+        dfs(cnt + 3, cost + m_3)
+    # 1년권: 1월에만 사용가능
+    if cnt == 0:
+        dfs(cnt + 12, cost + y)
 
 
 T = int(input())
