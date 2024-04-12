@@ -44,21 +44,19 @@ for tc in range(1, T+1):
                         cells[i][3] -= 1
 
         # 3. 중복되는 좌표들의 세포 합치기
-        for i in range(len(cells)):
-            sm = 0
-            pop_lst = []
-            for j in range(len(cells)-1, i, -1):
-                if cells[i][:2] == cells[j][:2]:
-                    # 뒤에 있는 군집이 더 크면 -> 현재 군집의 방향을 그 방향으로 바꿔주기
-                    if cells[i][2] < cells[j][2]:
-                        cells[i][3] = cells[j][3]
-                    # 군집 더하기
-                    sm += cells[j][2]
-                    # 뒤에 있는 군집 없애기
-                    pop_lst.append(j)
-            cells[i][2] += sm
-            for p in pop_lst:
-                cells.pop(p)
+         # 정렬: 좌표순 -> 미생물순
+        cells.sort(key=lambda x: (x[0], x[1], x[2]), reverse=True)
+
+        i = 1
+        while i < len(cells):
+            # 둘이 같다면
+            if cells[i-1][0] == cells[i][0] and cells[i-1][1] == cells[i][1]:
+                # 미생물 합치기
+                cells[i-1][2] += cells[i][2]
+                # 작은 녀석 빼기
+                cells.pop(i)
+            else:
+                i += 1
 
     ans = 0
     # 남은 미생물 수 더하기
